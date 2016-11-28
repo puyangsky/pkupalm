@@ -1,7 +1,8 @@
 import requests  
 from lxml import etree
 import MySQLdb
-import sys  
+import sys
+import settings
 reload(sys)  
 sys.setdefaultencoding('utf8')
 
@@ -14,7 +15,7 @@ headers = {
 	'Accept-Encoding': 'gzip, deflate',
 	# 'Referer': 'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/courseQuery/CourseQueryController.jpf',
 	'Referer': 'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/courseQuery/getCurriculmByForm.do',
-	'Cookie': 'JSESSIONID=zG7wY7WZwryCspbvNnk99pyv1W2Fs2qZGpL3GCndnZtQPQfNrtvp!-1379290452!1450160338',
+	'Cookie': settings.Cookie,
 	'Connection': 'keep-alive'
 	}
 
@@ -87,7 +88,7 @@ def parse_post_query(url, datas=None):
 		if not cursor.fetchone():
 			sql = "insert into course(name, type, xuefen, teacher, classno, school, major, grade, timeaddress, beizhu) values ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (
 				fields[0], fields[1], fields[2], fields[3], fields[4], fields[5], fields[6], fields[7], fields[8], fields[9])
-			# print sql
+			print sql
 			try:
 			   cursor.execute(sql)
 			   db.commit()
@@ -104,7 +105,13 @@ def parse_post_query(url, datas=None):
 
 if __name__ == '__main__':
 	# url = "http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/courseQuery/CourseQueryController.jpf"
-	url = "http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/courseQuery/getCurriculmByForm.do"
-	parse_post_query(url)
+	# url = "http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/courseQuery/getCurriculmByForm.do"
+	# url = "http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/courseQuery/queryCurriculum.jsp?"\
+	# "netui_row=syllabusListGrid;50"
+	for i in range(34):
+		url = "http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/courseQuery/queryCurriculum.jsp?"\
+		"netui_row=syllabusListGrid;%d" % (i * 50)
+		print url
+		parse_post_query(url)
 	# url = "http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/courseQuery/queryCurriculum.jsp"
 	# parse_get_query(url)
